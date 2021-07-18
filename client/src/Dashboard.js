@@ -3,6 +3,7 @@ import useAuth from "./useAuth";
 import { Container, Form } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import TrackSearchResult from "./TrackSearchResult";
+import Player from "./Player";
 
 const spotifyApi = new SpotifyWebApi({
     clientId: "d278a33f5f394798861be3c96263064c",
@@ -64,7 +65,7 @@ export default function Dashboard({ code }) {
                     <TrackSearchResult track={track} key={track.uri} />
                 ))}
             </div>
-            <div>Bottom</div>
+            <div><Player accessToken={accessToken} /></div>
         </Container>
     );
 }
