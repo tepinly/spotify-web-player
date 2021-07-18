@@ -23,8 +23,24 @@ export default function useAuth(code) {
     }, [code]);
 
     useEffect(() => {
-        
-    }, [refreshToken, expiresIn])
+        if (!refreshToken || !expiresIn) return;
 
-    return accessToken
+        const interval = setInterval(() => {
+            axios
+                .post("http://localhost:3001/login", {
+                    refreshToken,
+                })
+                .then((res) => {
+                    setAccessToken(res.data.accessToken);
+                    setExpiresIn(res.data.expiresIn);
+                })
+                .catch(() => {
+                    window.location = "/";
+                });
+        }, (expiresIn - 60) * 1000);
+
+        return () => clearInterval(interval);
+    }, [refreshToken, expiresIn]);
+
+    return accessToken;
 }
