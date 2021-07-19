@@ -6,7 +6,7 @@ import TrackSearchResult from "./TrackSearchResult";
 import Player from "./Player";
 import axios from "axios";
 
-require('dotenv').config({path:'../.env'});
+require("dotenv").config({ path: "../.env" });
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.client_id,
@@ -28,13 +28,18 @@ export default function Dashboard({ code }) {
     useEffect(() => {
         if (!playingTrack) return;
 
-        axios.get(`${process.env.server}/lyrics`, {
-            track: playingTrack.title,
-            artist: playingTrack.artist
-        }).then(res => {
-            setLyrics(res.data.lyrics);
-        })
-    }, [playingTrack])
+        axios
+            .get("http://localhost:3001/lyrics", {
+                params: {
+                    track: playingTrack.title,
+                    artist: playingTrack.artist,
+                },
+            })
+            .then((res) => {
+                setLyrics(res.data.lyrics);
+            })
+            .catch((err) => console.log(err));
+    }, [playingTrack]);
 
     useEffect(() => {
         if (!accessToken) return;
@@ -84,15 +89,24 @@ export default function Dashboard({ code }) {
             />
             <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
                 {searchResults.map((track) => (
-                    <TrackSearchResult track={track} key={track.uri} chooseTrack={chooseTrack} />
+                    <TrackSearchResult
+                        track={track}
+                        key={track.uri}
+                        chooseTrack={chooseTrack}
+                    />
                 ))}
-                {searchResults.length === 0 &&  (
+                {searchResults.length === 0 && (
                     <div className="text-center" style={{ whiteSpace: "pre" }}>
                         {lyrics}
                     </div>
                 )}
             </div>
-            <div><Player accessToken={accessToken} trackUri={playingTrack?.uri} /></div>
+            <div>
+                <Player
+                    accessToken={accessToken}
+                    trackUri={playingTrack?.uri}
+                />
+            </div>
         </Container>
     );
 }

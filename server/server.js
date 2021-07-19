@@ -1,18 +1,25 @@
 const express = require("express");
 const SpotifyWebApi = require("spotify-web-api-node");
 const cors = require("cors");
+const lyricsFinder = require("lyrics-finder");
 
 require('dotenv').config({path:'../.env'});
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/lyrics", (req))
+app.get("/lyrics", async (req, res) => {
+    const artist = req.query.artist.replace(/\s/g, "-");
+    const track = req.query.track.replace(/\s/g, "-");
+    const lyrics = await lyricsFinder(artist, track);
+    res.json({ lyrics });
+});
 
 app.post("/refresh", (req, res) => {
     const refreshToken = req.body.refreshToken;
     const spotifyApi = new SpotifyWebApi({
-        redirectUri: process.env.app,
+        redirectUri: process.env.app_address,
         clientId: process.env.client_id,
         clientSecret: process.env.client_secret,
         refreshToken,
@@ -34,7 +41,7 @@ app.post("/refresh", (req, res) => {
 app.post("/login", (req, res) => {
     const code = req.body.code;
     const spotifyApi = new SpotifyWebApi({
-        redirectUri: process.env.app,
+        redirectUri: process.env.app_address,
         clientId: process.env.client_id,
         clientSecret: process.env.client_secret,
     });
