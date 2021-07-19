@@ -7,10 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/lyrics", (req))
+
 app.post("/refresh", (req, res) => {
     const refreshToken = req.body.refreshToken;
     const spotifyApi = new SpotifyWebApi({
-        redirectUri: "http://localhost:3000",
+        redirectUri: process.env.app,
         clientId: process.env.client_id,
         clientSecret: process.env.client_secret,
         refreshToken,
@@ -32,7 +34,7 @@ app.post("/refresh", (req, res) => {
 app.post("/login", (req, res) => {
     const code = req.body.code;
     const spotifyApi = new SpotifyWebApi({
-        redirectUri: "http://localhost:3000",
+        redirectUri: process.env.app,
         clientId: process.env.client_id,
         clientSecret: process.env.client_secret,
     });
@@ -52,4 +54,4 @@ app.post("/login", (req, res) => {
         });
 });
 
-app.listen(3001);
+app.listen(process.env.server_port);
