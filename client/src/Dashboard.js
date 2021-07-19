@@ -5,8 +5,10 @@ import SpotifyWebApi from "spotify-web-api-node";
 import TrackSearchResult from "./TrackSearchResult";
 import Player from "./Player";
 
+require('dotenv').config({path:'../.env'});
+
 const spotifyApi = new SpotifyWebApi({
-    clientId: "d278a33f5f394798861be3c96263064c",
+    clientId: process.env.client_id,
 });
 
 export default function Dashboard({ code }) {
@@ -61,7 +63,7 @@ export default function Dashboard({ code }) {
         >
             <Form.Control
                 type="search"
-                placeholder="Search Songs/Artists"
+                placeholder="Search Songs / Artists"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />
